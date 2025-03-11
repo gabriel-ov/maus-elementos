@@ -1,0 +1,268 @@
+<HTML>
+   <HEAD>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+      <SCRIPT Language=Javascript>
+         //Character, camera, chat, and dice roll functions
+         function sendCharacterMessage(msg) {
+            sendMessage(document.getElementById("Name").value + "," + msg);
+         }
+
+         function sendCameraMessage(msg) {
+            sendMessage("CAMERA," + msg);
+         }
+
+         function sendChatMessage(msg) {
+            sendMessage(document.getElementById("Name").value + "," + msg);
+         }
+
+         function sendDiceRoll(msg) {
+            sendMessage("GM," + msg);
+         }
+
+         function sendMessage(msg) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+               if (this.readyState == 4 && this.status == 200) {
+                  var response = xhttp.responseText;
+                  document.getElementById("Result").innerHTML = xhttp.responseText;
+               }
+            };
+            xhttp.open("POST", "http://127.0.0.1/Remote/Request.php", true);
+            xhttp.send(msg);
+         }
+         //Face Movement Toggle Function
+         function toggleFaceMovement() {
+            if (document.getElementById('MovementFace').checked) {
+               MovementFace.value = "ANDFACE";
+               localStorage.setItem('MovementFaceStorage', MovementFace.value);
+            } else {
+               MovementFace.value = "";
+               localStorage.setItem('MovementFaceStorage', MovementFace.value);
+            }
+         }
+         //Follow Camera Axis Function
+         function toggleFollowCameraAxis() {
+            if (document.getElementById('FollowCameraAxis').checked) {
+               FollowCameraAxis.value = "CAMERABASED";
+               localStorage.setItem('FollowCameraAxisStorage', FollowCameraAxis.value);
+            } else {
+               FollowCameraAxis.value = "";
+               localStorage.setItem('FollowCameraAxisStorage', FollowCameraAxis.value);
+            }
+         }
+      </SCRIPT>
+   </HEAD>
+   <BODY>
+   <!-- CHARACTER CONTROLS -->
+   <Span Id=CharacterLabel Style="Position: Absolute; Left: 10px; Top: 7px; font-weight: bold;">
+      <i class="fa fa-user-o" aria-hidden="true" Style="color: grey"></i> Character: </Span>
+   <Input Id=Name Type=Text Width=320 Height=30 placeholder="Character name goes here." Style="Position: Absolute; Left: 105px; Top: 9px; Width: 170px; Height: 17px; border: solid 1px black font-size: 10px;" />
+   <DIV Id=CharacterRemote Width=105 Height=320 Style="Position: Absolute; Left: 10px; Top: 30px; Width: 105px; Height: 125px; border: solid 1px black;">
+      <Button Id=Up Style="Position: Absolute; Left: 40px; Top: 10px; Width: 25px; Height: 25px;" onClick="sendCharacterMessage('FORWARD'+FollowCameraAxis.value+MovementFace.value +',' +MovementText.value +',' +AnimationText);">
+         <i class="fa fa-caret-up" aria-hidden="true"></i>
+      </Button>
+      <Button Id=Left Style="Position: Absolute; Left: 10px; Top: 40px; Width: 25px; Height: 25px;" onClick="sendCharacterMessage('LEFT'+FollowCameraAxis.value+MovementFace.value +',' +MovementText.value +',' +AnimationText);">
+         <i class="fa fa-caret-left" aria-hidden="true"></i>
+      </Button>
+      <Button Id=Right Style="Position: Absolute; Left: 70px; Top: 40px; Width: 25px; Height: 25px;" onClick="sendCharacterMessage('RIGHT'+FollowCameraAxis.value+MovementFace.value +',' +MovementText.value +',' +AnimationText);">
+         <i class="fa fa-caret-right" aria-hidden="true"></i>
+      </Button>
+      <Button Id=Down Style="Position: Absolute; Left: 40px; Top: 70px; Width: 25px; Height: 25px;" onClick="sendCharacterMessage('BACKWARD'+FollowCameraAxis.value+MovementFace.value +',' +MovementText.value +',' +AnimationText);">
+         <i class="fa fa-caret-down" aria-hidden="true"></i>
+      </Button>
+      <Span Id=ControlLabel Style="Position: Absolute; Left: 41px; Top: 45px; font-size: 10px;">Move</Span>
+
+      <input id="FollowCameraAxis" type="Checkbox" style="Position: Absolute; Left: 0px; bottom: 0px; Width: 35px; Height: 20px;" value="CAMERABASED" onchange="toggleFollowCameraAxis();">
+      <Span Id=MovementinfoLabel Style="Position: Absolute; Left: 36px; bottom: 0px; font-size: 10px;">Follow Camera Axis </Span>
+   </DIV>
+   <DIV Id=Characterfly Width=40 Height=320 Style="Position: Absolute; Left: 122px; Top: 30px; Width: 40px; Height: 125px; border: solid 1px black;">
+      <Button Id=Up Style="Position: Absolute; Left: 8px; Top: 10px; Width: 25px; Height: 25px;" onClick="sendCharacterMessage('UP,'+MovementText.value +',' +AnimationText);">
+         <i class="fa fa-caret-up" aria-hidden="true"></i>
+      </Button>
+      <Button Id=Down Style="Position: Absolute; Left: 8px; Top: 70px; Width: 25px; Height: 25px;" onClick="sendCharacterMessage('DOWN,'+MovementText.value +',' +AnimationText);">
+         <i class="fa fa-caret-down" aria-hidden="true"></i>
+      </Button>
+      <Span Id=ControlLabel Style="Position: Absolute; Left: 14px; Top: 46px; font-size: 10px;">Fly</Span>
+   </DIV>
+   <DIV Id=CharacterRotate Width=105 Height=320 Style="Position: Absolute; Left: 170px; Top: 30px; Width: 105px; Height: 125px; border: solid 1px black;">
+      <Button Id=Up Style="Position: Absolute; Left: 40px; Top: 10px; Width: 25px; Height: 25px;" onClick="sendCharacterMessage('ROTATE,FORWARD,'+RotateText.value);">
+         <i class="fa fa-caret-up" aria-hidden="true"></i>
+      </Button>
+      <Button Id=Left Style="Position: Absolute; Left: 10px; Top: 40px; Width: 25px; Height: 25px;" onClick="sendCharacterMessage('ROTATE,COUNTERCLOCKWISE,'+RotateText.value);">
+         <i class="fa fa-caret-left" aria-hidden="true"></i>
+      </Button>
+      <Button Id=Right Style="Position: Absolute; Left: 70px; Top: 40px; Width: 25px; Height: 25px;" onClick="sendCharacterMessage('ROTATE,CLOCKWISE,'+RotateText.value);">
+         <i class="fa fa-caret-right" aria-hidden="true"></i>
+      </Button>
+      <Button Id=Down Style="Position: Absolute; Left: 40px; Top: 70px; Width: 25px; Height: 25px;" onClick="sendCharacterMessage('ROTATE,BACKWARD,'+RotateText.value);">
+         <i class="fa fa-caret-down" aria-hidden="true"></i>
+      </Button>
+      <Span Id=ControlLabel Style="Position: Absolute; Left: 40px; Top: 46px; font-size: 10px;">Rotate</Span>
+   </DIV>
+   <!-- CAMERA CONTROLS -->
+   <Span Id=CameraLabel Style="Position: Absolute; Left: 10px; Top: 165px; font-weight: bold; ">
+      <i class="fa fa-eye" aria-hidden="true" Style="color: grey"></i> Camera: </Span>
+   <DIV Id=ChameraRemote Width=105 Height=320 Style="Position: Absolute; Left: 10px; Top: 185px; Width: 105px; Height: 105px; border: solid 1px black;">
+      <Button Id=Up Style="Position: Absolute; Left: 40px; Top: 10px; Width: 25px; Height: 25px;" onClick="sendCameraMessage('FORWARD,'+MovementText.value);">
+         <i class="fa fa-caret-up" aria-hidden="true"></i>
+      </Button>
+      <Button Id=Left Style="Position: Absolute; Left: 10px; Top: 40px; Width: 25px; Height: 25px;" onClick="sendCameraMessage('LEFT,'+MovementText.value);">
+         <i class="fa fa-caret-left" aria-hidden="true"></i>
+      </Button>
+      <Button Id=Right Style="Position: Absolute; Left: 70px; Top: 40px; Width: 25px; Height: 25px;" onClick="sendCameraMessage('RIGHT,'+MovementText.value);">
+         <i class="fa fa-caret-right" aria-hidden="true"></i>
+      </Button>
+      <Button Id=Down Style="Position: Absolute; Left: 40px; Top: 70px; Width: 25px; Height: 25px;" onClick="sendCameraMessage('BACKWARD,'+MovementText.value);">
+         <i class="fa fa-caret-down" aria-hidden="true"></i>
+      </Button>
+      <Span Id=ControlLabel Style="Position: Absolute; Left: 41px; Top: 45px; font-size: 10px;">Move</Span>
+      <Button Id=ZoomIn Style="Position: Absolute; Left: 11px; Top: 11px; Width: 20px; Height: 20px;" onClick="sendCameraMessage('ZOOMIN');">
+         <i class="fa fa-search-plus" aria-hidden="true" Style="Position: Absolute; Left: 2px; Top: 1;"></i>
+      </Button>
+      <Button Id=ZoomOut Style="Position: Absolute; Left: 11px; Top: 74px; Width: 20px; Height: 20px;" onClick="sendCameraMessage('ZOOMOUT');">
+         <i class="fa fa-search-minus" aria-hidden="true" Style="Position: Absolute; Left: 2px; Top: 1;"></i>
+      </Button>
+   </DIV>
+   <DIV Id=CameraHeight Width=40 Height=320 Style="Position: Absolute; Left: 122px; Top: 185px; Width: 40px; Height: 105px; border: solid 1px black;">
+      <Button Id=Up Style="Position: Absolute; Left: 8px; Top: 10px; Width: 25px; Height: 25px;" onClick="sendCameraMessage('UP,1');">
+         <i class="fa fa-caret-up" aria-hidden="true"></i>
+      </Button>
+      <Button Id=Down Style="Position: Absolute; Left: 8px; Top: 70px; Width: 25px; Height: 25px;" onClick="sendCameraMessage('DOWN,1');">
+         <i class="fa fa-caret-down" aria-hidden="true"></i>
+      </Button>
+      <Span Id=ControlLabel Style="Position: Absolute; Left: 7px; Top: 46px; font-size: 10px;">Height</Span>
+   </DIV>
+   <DIV Id=CameraRotate Width=105 Height=320 Style="Position: Absolute; Left: 170px; Top: 185px; Width: 105px; Height: 105px; border: solid 1px black;">
+      <Button Id=Up Style="Position: Absolute; Left: 40px; Top: 10px; Width: 25px; Height: 25px;" onClick="sendCameraMessage('ROTATE,FORWARD,'+RotateText.value);">
+         <i class="fa fa-caret-up" aria-hidden="true"></i>
+      </Button>
+      <Button Id=Left Style="Position: Absolute; Left: 10px; Top: 40px; Width: 25px; Height: 25px;" onClick="sendCameraMessage('ROTATE,COUNTERCLOCKWISE,'+RotateText.value);">
+         <i class="fa fa-caret-left" aria-hidden="true"></i>
+      </Button>
+      <Button Id=Right Style="Position: Absolute; Left: 70px; Top: 40px; Width: 25px; Height: 25px;" onClick="sendCameraMessage('ROTATE,CLOCKWISE,'+RotateText.value);">
+         <i class="fa fa-caret-right" aria-hidden="true"></i>
+      </Button>
+      <Button Id=Down Style="Position: Absolute; Left: 40px; Top: 70px; Width: 25px; Height: 25px;" onClick="sendCameraMessage('ROTATE,BACKWARD,'+RotateText.value);">
+         <i class="fa fa-caret-down" aria-hidden="true"></i>
+      </Button>
+      <Span Id=ControlLabel Style="Position: Absolute; Left: 40px; Top: 46px; font-size: 10px;">Rotate</Span>
+   </DIV>
+   <!-- CHAT AND DICE -->
+   <Span Id=ChatLabel Style="Position: Absolute; Left: 10px; Top: 300px; font-weight: bold; ">
+      <i class="fa fa-commenting-o" aria-hidden="true" Style="color: grey"></i> Chat: </Span>
+   <Input Id=ChatText Type=Text Width=220 Height=30 Style="Position: Absolute; Left: 10px; Top: 320px; Width: 220px; Height: 20px; border: solid 1px black;" />
+   <Button Id=ChatButton Style="Position: Absolute; Left: 228px; Top: 320px; Height: 20px;" onClick="sendChatMessage('CHAT,'+ChatText.value);">Send</Button>
+   <Span Id=DiceLabel Style="Position: Absolute; Left: 10px; Top: 350px; font-weight: bold;">
+      <i class="fa fa-square-o" aria-hidden="true" Style="color: grey"></i> Dice Roll: </Span>
+   <Input Id=DiceText Type=Text Width=220 Height=30 placeholder="Name:roll. Example: Attack:1D20+3" Style="Position: Absolute; Left: 10px; Top: 370px; Width: 220px; Height: 20px; border: solid 1px black;" />
+   <Button Id=diceButton Style="Position: Absolute; Left: 228px; Top: 370px; Width: 45px; Height: 20px;" onClick="sendDiceRoll('DICE,'+DiceText.value);">Roll</Button>
+   <!-- STATUS -->
+   <Span Id=ResultLabel Style="Position: Absolute; Left: 10px; Top: 420px; font-weight: bold;">
+      <i class="fa fa-bullhorn" aria-hidden="true" Style="color: grey"></i> Status: </Span>
+   <Div Id=Result Width=260 Height=30 Style="Position: Absolute; Left: 10px; Top: 440px; Width: 260px; Height: 25px; border: solid 1px black; background-color: #AAAAAA; font-size: 11px;">
+   </DIV>
+   <!-- SETTINGS -->
+   <Span Id=SettingsLabel Style="Position: Absolute; Left: 10px; Top: 475px; font-weight: bold;">
+      <i class="fa fa-cogs" aria-hidden="true" Style="color: grey"></i> Settings: </Span>
+   <DIV Id=Settings Width=105 Height=320 Style="Position: Absolute; Left: 10px; Top: 495px; Width: 260px; Height: 130px; border: solid 1px black;">
+      <Span Id=MovementLabel Style="Position: Absolute; Left: 15px; Top: 8px;">Movement Amount:</Span>
+      <Input Id=MovementText Type=Text Width=50 Height=30 Style="Position: Absolute; Left: 165px; Top: 8px; Width: 50px; Height: 20px; border: solid 1px black; text-align: center;" value="1.0" />
+      <Input Id=MovementFace Type=Checkbox Style="Position: Absolute; Left: 218px; Top: 5px; Width: 35px; Height: 20px;" Value="" onchange="toggleFaceMovement();"></Input>
+      <Span Id=MovementinfoLabel Style="Position: Absolute; Left: 15px; Top: 25px; font-size: 10px;">(Checkbox: Face Moving Direction) </Span>
+      <Span Id=RotateLabel Style="Position: Absolute; Left: 15px; Top: 40px;">Rotate Amount:</Span>
+      <Input Id=RotateText Type=Text Width=50 Height=30 Style="Position: Absolute; Left: 165px; Top: 40px; Width: 50px; Height: 20px; border: solid 1px black; text-align: center;" value="5.0" />
+      <Span Id=ZoomLabel Style="Position: Absolute; Left: 15px; Top: 70px;">Default Zoom Level:</Span>
+      <Input Id=ZoomText Type=Text Width=50 Height=30 Style="Position: Absolute; Left: 165px; Top: 70px; Width: 50px; Height: 20px; border: solid 1px black;text-align: center;" value="0.3" />
+      <Button Id=ZoomSet Style="Position: Absolute; Left: 220px; Top: 70px; Width: 35px; Height: 20px;" onClick="sendCameraMessage('ZOOMSET,'+ZoomText.value);">Set</Button>
+      <Span Id=ZoominfoLabel Style="Position: Absolute; Left: 27px; Top: 87px; font-size: 10px;">(Set zoom value to < 1.0) </Span>
+	  
+	  <Span Id=AnimationLabel Style="Position: Absolute; Left: 10px; Top: 105px;">Animation:</Span>
+	  <select id="AnimationSelect" Style="Position: Absolute; Left: 165px; Top: 102px; Width: 90px; Height: 20px; border: solid 1px black;">
+       <option value="Teleport">Teleport</option>
+       <option value="Drunk">Drunk</option>
+       <option value="Hop">Hop</option>
+       <option value="LiftSlide">Lift Slide</option>
+	   <option value="Slide">Slide</option>
+      </select>
+   </DIV>
+   
+   
+   <SCRIPT Language=Javascript>
+      //Cache Character Name
+      const Name = document.getElementById('Name')
+      Name.value = localStorage.getItem("NameStorage"); // get and assign the value outside 
+      Name.oninput = function() {
+         const NameStorage = Name.value;
+         localStorage.setItem('NameStorage', NameStorage);
+      };
+      //Cache Movement Settings
+      const MovementText = document.getElementById('MovementText')
+      MovementText.value = localStorage.getItem("MovementStorage"); // get and assign the value outside 
+      MovementText.oninput = function() {
+         const MovementStorage = MovementText.value;
+         localStorage.setItem('MovementStorage', MovementStorage);
+      };
+      //Cache Rotate Settings
+      const RotateText = document.getElementById('RotateText')
+      RotateText.value = localStorage.getItem("RotateStorage"); // get and assign the value outside 
+      RotateText.oninput = function() {
+         const RotateStorage = RotateText.value;
+         localStorage.setItem('RotateStorage', RotateStorage);
+      };
+      //Cache Zoom Settings
+      const ZoomText = document.getElementById('ZoomText')
+      ZoomText.value = localStorage.getItem("ZoomStorage"); // get and assign the value outside 
+      ZoomText.oninput = function() {
+         const ZoomStorage = ZoomText.value;
+         localStorage.setItem('ZoomStorage', ZoomStorage);
+      };
+      //Cache Face Moving Direction Toggle
+      const MovementFace = document.getElementById('MovementFace')
+      MovementFace.value = localStorage.getItem("MovementFaceStorage"); // get and assign the value outside 
+      MovementFace.oninput = function() {
+         const MovementFaceStorage = MovementFace.value;
+         localStorage.setItem('MovementFaceStorage', MovementFaceStorage);
+      };
+      //Cache Follow Camera Axis
+      const FollowCameraAxis = document.getElementById('FollowCameraAxis')
+      FollowCameraAxis.value = localStorage.getItem("FollowCameraAxisStorage"); // get and assign the value outside 
+      FollowCameraAxis.oninput = function() {
+         const FollowCameraAxisStorage = MovementFace.value;
+         localStorage.setItem('FollowCameraAxisStorage', FollowCameraAxisStorage);
+      };
+      //Load Settings
+      window.onload = function() {
+         if (document.getElementById('MovementText').value.length === 0) {
+            document.getElementById('MovementText').value = "1.0";
+         }
+         if (document.getElementById('RotateText').value.length === 0) {
+            document.getElementById('RotateText').value = "5.0";
+         }
+         if (document.getElementById('ZoomText').value.length === 0) {
+            document.getElementById('ZoomText').value = "0.3";
+         }
+         if (localStorage.getItem("MovementFaceStorage") == "ANDFACE") {
+            document.getElementById("MovementFace").checked = true;
+         }
+      };
+      
+	  // MOVEMENT ANIMATION CACHE
+
+      var select = document.querySelector("#AnimationSelect");
+      var selectOption = select.options[select.selectedIndex];
+      var lastSelected = localStorage.getItem('select');
+      var AnimationText = "Teleport";
+      if (lastSelected) {
+         select.value = lastSelected;
+         AnimationText = lastSelected;
+      }
+      select.onchange = function() {
+         lastSelected = select.options[select.selectedIndex].value;
+         AnimationText = lastSelected;
+         console.log(lastSelected);
+         console.log(AnimationText);
+         localStorage.setItem('select', lastSelected);
+      }
+   </SCRIPT>
+   </BODY>
+</HTML>
